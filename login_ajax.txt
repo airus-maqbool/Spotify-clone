@@ -1,0 +1,63 @@
+        <!--===== Login Container =====-->
+        <div class="login-container">
+            <div class="logo_div">
+                <i class="ri-spotify-fill logo"></i>
+            </div>
+            <div class="login-head">
+                <h1>Log in to Spotify</h1>
+            </div>
+            <div id="formerror" style="display:none;">
+                <img src="error.svg" alt="">
+                <span>Incorrect username or password.</span>
+            </div>
+
+            <form class="login-content" id="loginForm">
+                <div class="login-options">
+                    <div class="google">
+                        <img src="/login_Images/google.webp" alt="google">
+                        <h3>Continue with Google</h3>
+                    </div>
+
+                    <div class="facebook">
+                        <img src="/login_Images/facebook.svg" alt="facebook">
+                        <h3>Continue with Facebook</h3>
+                    </div>
+
+                    <div class="apple">
+                        <img src="/login_Images/apple.png" alt="apple">
+                        <h3>Continue with Apple</h3>
+                    </div>
+                </div>
+
+                <div class="email-input-box">
+                    <label for="email" class="email-label">Email or username</label>
+                    <input type="email" class="email-input" id="email" name="email" placeholder="Email or username" required>
+                </div>
+
+                <div class="password-input-box">
+                    <label for="password" class="password-label">Password</label>
+                    <div class="pass-div">
+                        <input type="password" class="password-input" name="password" id="password" placeholder="Password">
+                        <i class="ri-eye-off-line pass-toggle"></i>
+                    </div>
+                </div>
+
+                <div class="remember">
+                    <input type="checkbox" class="rem-check">
+                    <span class="rem-txt">Remember me</span>
+                </div>
+
+                <div class="login-button">
+                    <button type="submit" class="login-btn" id="login_button">Log In</button>
+                </div>
+
+                <div class="forgot">
+                    <a href="#" class="forgot-txt">Forgot your password?</a>
+                </div>
+            </form>
+
+            <div class="signUp">
+                <span class="signUp-txt">Don't have an account? <a href="#">Sign up for Spotify</a></span>
+            </div>
+        </div>
+    

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Login Page - CodeCraftedWeb</title>
+    <!-- font family link -->
+    <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700&display=swap"
+    rel="stylesheet" />
+    <!--========== CSS File ==========-->
+    <link rel="stylesheet" href="login_style.css">
+
+    <!--========== Favicon ==========-->
+    <link rel="shortcut icon" href="/Images/favicon.ico" type="image/x-icon">
+
+    <!--========== Remixicon ==========-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.css" integrity="sha512-OQDNdI5rpnZ0BRhhJc+btbbtnxaj+LdQFeh0V9/igiEPDiWE2fG+ZsXl0JEH+bjXKPJ3zcXqNyP4/F/NegVdZg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+   
+    <!--========== Main Content ==========-->
+    <main class="main-content">
+               <!--===== Login Container =====-->
+               <div class="login-container">
+                <div class="logo_div">
+                    <i class="ri-spotify-fill logo"></i>
+                </div>
+                <div class="login-head">
+                    <h1>Log in to Spotify</h1>
+                </div>
+                <div id="formerror" style="display:none;">
+                    <img src="error.svg" alt="">
+                    <span>Incorrect username or password.</span>
+                </div>
+    
+                <form class="login-content" id="loginForm">
+                    <div class="login-options">
+                        <div class="google">
+                            <img src="/login_Images/google.webp" alt="google">
+                            <h3>Continue with Google</h3>
+                        </div>
+    
+                        <div class="facebook">
+                            <img src="/login_Images/facebook.svg" alt="facebook">
+                            <h3>Continue with Facebook</h3>
+                        </div>
+    
+                        <div class="apple">
+                            <img src="/login_Images/apple.png" alt="apple">
+                            <h3>Continue with Apple</h3>
+                        </div>
+                    </div>
+    
+                    <div class="email-input-box">
+                        <label for="email" class="email-label">Email or username</label>
+                        <input type="email" class="email-input" id="email" name="email" placeholder="Email or username" required>
+                    </div>
+    
+                    <div class="password-input-box">
+                        <label for="password" class="password-label">Password</label>
+                        <div class="pass-div">
+                            <input type="password" class="password-input" name="password" id="password" placeholder="Password">
+                            <i class="ri-eye-off-line pass-toggle"></i>
+                        </div>
+                    </div>
+    
+                    <div class="remember">
+                        <input type="checkbox" class="rem-check">
+                        <span class="rem-txt">Remember me</span>
+                    </div>
+    
+                    <div class="login-button">
+                        <button type="submit" class="login-btn" id="login_button">Log In</button>
+                    </div>
+    
+                    <div class="forgot">
+                        <a href="#" class="forgot-txt">Forgot your password?</a>
+                    </div>
+                </form>
+    
+                <div class="signUp">
+                    <span class="signUp-txt">Don't have an account? <a href="#">Sign up for Spotify</a></span>
+                </div>
+            </div>
+        
+    </main>
+
+    <!--========== Footer ==========-->
+    <footer class="footer">
+        <span class="footer-txt">This site is protected by reCAPTCHA and the Google <a href="#">Privacy Policy</a> and <a href="#">Terms of Service</a> apply.</span>
+    </footer>
+
+  <!-- jQuery and validation plugins -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js" integrity="sha512-KFHXdr2oObHKI9w4Hv1XPKc898mE4kgYx58oqsc/JqqdLMDI4YjOLzom+EMlW8HFUd0QfjfAvxSL6sEq/a42fQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script>
+    $(document).ready(function () {
+  // Set the sample email placeholder
+  $('#email').attr('placeholder', 'example@example.com').css('color', '#b0b0b0');
+
+  // Change color back to normal when user starts typing
+  $('#email').on('focus', function () {
+    $(this).css('color', '#b0b0b0');  // Change to normal text color when user focuses on the input
+  });
+
+  // Restore the dull color if the input is empty after focus out
+  $('#email').on('blur', function () {
+    if ($(this).val() === '') {
+      $(this).css('color', '#b0b0b0');  // Restore dull color if input is empty
+    }
+  });
+});
+    $(document).ready(function () {
+      // ajax request for login page
+      $(".main-content").load('login_ajax.txt',function(){
+        let emailId;
+      $("#loginForm").validate({
+        
+        rules: {
+          email: {
+            required: true,
+            email: true,
+          },
+          password: {
+            required: true,
+            minlength: 8,
+          },
+        },
+        messages: {
+          email: {
+            required: "Please enter your email or username",
+            email: "Please enter a valid email address",
+          },
+          password: {
+            required: "Please provide a password",
+            minlength: "Password must be at least 8 characters long",
+          },
+        },
+        errorPlacement: function (error, element) {
+          // Special handling for password to place error after the .pass-div
+          if (element.attr("name") === "password") {
+            error.insertAfter(".pass-div");
+          } else {
+            error.insertAfter(element);
+          }
+        },
+        submitHandler: function (form) {
+          emailId=$('#email').val();
+          localStorage.setItem('email', emailId);
+          let storedemail=localStorage.getItem('email');
+          alert(`${storedemail} you have been logged in successfully.`);
+          form.submit();
+        }
+      }); 
+    });
+      
+
+      
+    });
+  </script>
+</body>
+</html>

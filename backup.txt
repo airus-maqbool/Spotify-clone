@@ -1,0 +1,249 @@
+
+  // Initial Owl Carousel setup
+  function initializeCarousel() {
+    $(".testimonial_slider_area").owlCarousel({
+      autoplay: false,
+      items: 3,
+      nav: true,
+      navText: ['<i class="fa fa-arrow-left"></i>', '<i class="fa fa-arrow-right"></i>'],
+      margin: -30,
+      dots: false,
+      responsive: {
+        0: { items: 1 },
+        600: { items: 2 },
+        1000: { items: 3 }
+      }
+    });
+  }
+  //  submit reviews section using ajax
+   // Handle Submit button click
+   $(".submit-review").on("click", function (e) {
+    e.preventDefault();
+
+    // Get form values
+    // .trim() remves the extra white spaces from start and end of user input
+    const name = $("#name").val().trim();
+    const gmail = $("#gmail").val().trim();
+    const review = $("#reviewInput").val().trim();
+
+    // Basic validation
+    if (!name || !gmail || !review) {
+        alert("Please fill in all fields.");
+        return;
+    }
+    if (!validateEmail(gmail)) {
+        alert("Please enter a valid email address.");
+        return;
+    }
+
+    // Prepare data object
+    const newReview = {
+        name: name,
+        gmail: gmail,
+        review: review
+    };
+    // const newReview={name, gmail, review};
+    // append new review to the existin array and update jsonbin
+    $.ajax({
+        url: "https://api.jsonbin.io/v3/b/67309095acd3cb34a8a5ee7c", 
+       
+        method: "GET",
+        headers:{
+          "X-Master-Key":"$2a$10$b3eIB8ks2ToJxE0iQFr9CuhNQsQddPfePjDYp7WfA.4khuRwZv7iu"
+        },
+        
+        success: function (response) {
+            const reviews=response.record;
+           
+            // add new review in json bin
+            reviews.push(newReview); 
+            $.ajax({
+              url: "https://api.jsonbin.io/v3/b/67309095acd3cb34a8a5ee7c",
+              method: "PUT",
+              headers:{
+                "Content-Type": "application/json",
+                "X-Master-Key": "$2a$10$b3eIB8ks2ToJxE0iQFr9CuhNQsQddPfePjDYp7WfA.4khuRwZv7iu"
+              },
+              // will convert the jquery object to json format
+              data: JSON.stringify(reviews),
+              success: function(){
+                alert("Review submitted successfully");
+                // reload reviews with new reviews added to it
+                loadReviews();
+                clearForm();  
+              },
+              error: function(){
+                alert("Failed to submit review.");
+              }
+            });
+        },
+        error: function (error) {
+            console.error("Error fetching reviews while submitting:", error);
+        }
+    });
+});
+
+// Handle Cancel button click
+$(".cancel-review").on("click", function (e) {
+    e.preventDefault();
+    clearForm();
+});
+
+// Helper function to clear the form
+function clearForm() {
+    $("#name").val("");
+    $("#gmail").val("");
+    $("#reviewInput").val("");
+}
+
+// Helper function to validate email
+function validateEmail(email) {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+}
+
+
+  // Load reviews and set up the carousel
+  function loadReviews() {
+    $.ajax({
+        // url of bin from json.io api 
+      url: "https://api.jsonbin.io/v3/b/67309095acd3cb34a8a5ee7c",
+      method: "GET",
+      headers: {
+        "X-Master-Key": "$2a$10$b3eIB8ks2ToJxE0iQFr9CuhNQsQddPfePjDYp7WfA.4khuRwZv7iu"
+      },
+      success: function (data) {
+        const reviewArray = data.record;
+        
+        // Destroy previous instance of Owl Carousel before re-initializing
+        $(".testimonial_slider_area").trigger('destroy.owl.carousel').empty().removeClass('owl-carousel owl-loaded');
+
+        // Add each review as a new item
+        reviewArray.forEach(function (obj) {
+          const reviewCard = `
+            <div class="box-area">
+              <div class="img-area"></div>
+              <h5 class="person_name">${obj.name}</h5>
+              <span class="gmail">${obj.gmail}</span>
+              <p class="content">${obj.review}</p>
+            </div>`;
+          $(".testimonial_slider_area").append($(reviewCard));
+        });
+
+        // Re-initialize Owl Carousel with the updated items
+        $(".testimonial_slider_area").addClass('owl-carousel');
+        initializeCarousel();
+      },
+      error: function (error) {
+        console.log("Error fetching data", error);
+      }
+    });
+  }
+
+  // Load reviews initially
+  loadReviews();
+
+
+  // playbar done previously by youtube random video javascript
+  let currentMusic = 0; // currently running song
+const music = document.querySelector('#audio');
+const seekbar = document.querySelector('.seek-bar');
+const songName = document.querySelector('.music-name');
+const disk = document.querySelector('.disk');
+const currentTime = document.querySelector('.current-time');
+const musicduration = document.querySelector('.song-duration');
+const playbtn = document.querySelector('.play-btn');
+const forwardBtn = document.querySelector('.forward-btn');
+const backwardBtn = document.querySelector('.backward-btn');
+
+let songs = []; // Initialize an empty array for songs
+
+// Fetch songs from the JSON file
+fetch('songs.json')
+  .then(response => response.json())
+  .then(data => {
+    songs = data; // Store fetched songs in the array
+    setMusic(currentMusic); // Set the first song
+  })
+  .catch(error => console.error('Error fetching the songs:', error));
+
+playbtn.addEventListener('click', () => {
+  if (playbtn.classList.contains('pause')) {
+    music.play();
+  } else {
+    music.pause();
+  }
+  playbtn.classList.toggle('pause');
+  disk.classList.toggle('play');
+});
+
+// Setup music
+const setMusic = (i) => {
+  seekbar.value = 0;
+  let song = songs[i];
+  currentMusic = i;
+  music.src = song.path;
+  songName.innerHTML = song.name;
+  disk.style.backgroundImage = `url('${song.cover}')`;
+  currentTime.innerHTML = '00:00';
+
+  setTimeout(() => {
+    seekbar.max = music.duration;
+    musicduration.innerHTML = formatTime(music.duration);
+  }, 250);
+};
+
+const formatTime = (time) => {
+  let min = Math.floor(time / 60);
+  if (min < 10) {
+    min = `0${min}`;
+  }
+  let sec = Math.floor(time % 60);
+  if (sec < 10) {
+    sec = `0${sec}`;
+  }
+  return `${min} : ${sec}`;
+};
+
+// Seek bar
+setInterval(() => {
+  if (music.duration) {
+    seekbar.value = music.currentTime;
+    currentTime.innerHTML = formatTime(music.currentTime);
+    if (Math.floor(music.currentTime) === Math.floor(seekbar.max)) {
+      forwardBtn.click();
+    }
+  }
+}, 500);
+
+seekbar.addEventListener('change', () => {
+  music.currentTime = seekbar.value;
+});
+
+const playMusic = () => {
+  music.play();
+  playbtn.classList.remove('pause');
+  disk.classList.add('play');
+};
+
+// Forward and previous buttons
+forwardBtn.addEventListener('click', () => {
+  if (currentMusic >= songs.length - 1) {
+    currentMusic = 0;
+  } else {
+    currentMusic++;
+  }
+  setMusic(currentMusic);
+  playMusic();
+});
+
+backwardBtn.addEventListener('click', () => {
+  if (currentMusic <= 0) {
+    currentMusic = songs.length - 1;
+  } else {
+    currentMusic--;
+  }
+  setMusic(currentMusic);
+  playMusic();
+});
+  // playbar end

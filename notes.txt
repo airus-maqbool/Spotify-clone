@@ -1,0 +1,5 @@
+jsonbin.io api has been used to create bin and store feedbacks/reviews data in json format
+
+
+client id for my spotify api app: 5db0bacc2e1044429ee7d6654b7b04af
+client secret: 86ffdae31ae646c3a644e5bde75ba1e0
