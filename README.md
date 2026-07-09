@@ -29,7 +29,7 @@ A full-stack music streaming web app inspired by Spotify, built with HTML, CSS, 
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/your-username/your-repo-name.git
+   git clone https://github.com/airus-maqbool/Spotify-clone.git
    ```
 
 2. Move the project folder into your server's root directory
